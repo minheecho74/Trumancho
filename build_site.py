@@ -425,14 +425,18 @@ write("projects.html", page("Projects — Truman Cho", "Projects", projects_body
 # ---------- PORTFOLIO PAGES (real section structure, not flat galleries) ----------
 CDN = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f"
 
-def photo_row(urls, full_width=None):
-    """Flex-wrap row of images. full_width: set of URLs (or 0-indexed positions) to show uncropped at full width."""
-    full_width = full_width or set()
-    out = ""
-    for i, u in enumerate(urls):
-        cls = "project-photo-full" if (u in full_width or i in full_width) else ""
-        out += f'<img class="{cls}" src="{img(u)}" alt="">'
-    return f'<div class="project-photos">{out}</div>'
+def photo_row(urls, max_cols=4):
+    """A row of cropped, uniformly-sized photos. Uses exactly len(urls) columns (all in
+    one row) when that's small; caps at max_cols and wraps for larger sets."""
+    if not urls:
+        return ""
+    cols = min(len(urls), max_cols)
+    out = "".join(f'<img src="{img(u)}" alt="">' for u in urls)
+    return f'<div class="project-photos" style="grid-template-columns:repeat({cols}, 1fr);">{out}</div>'
+
+def illustration(url):
+    """A single uncropped, full-width graphic (character sheets, sticker collages)."""
+    return f'<img class="project-illustration" src="{img(url)}" alt="">'
 
 def portfolio_page(fname, title, subtitle, body_html):
     body = f"""
@@ -480,13 +484,15 @@ client_work_body = f"""
 <section class="project-block wrap">
   <h2 class="project-title">VOX MEDIA</h2>
   <p class="project-meta">Vox Media &middot; Custom illustrations &middot; Holiday gifting 2024</p>
-  {photo_row(vox_imgs, full_width={0})}
+  {illustration(vox_imgs[0])}
+  {photo_row(vox_imgs[1:])}
 </section>
 <section class="project-block wrap">
   <h2 class="project-title">FRIDAY HARBOR SUITES</h2>
   <p class="project-meta">Friday Harbor Suites &middot; Gift shop merch design &middot; 2023&ndash;present</p>
   <p class="project-desc">Custom illustrations on procreate, heat-pressed and decaled on site<br>launched first collection with a one day popup event</p>
-  {photo_row(fhs_imgs, full_width={0})}
+  {illustration(fhs_imgs[0])}
+  {photo_row(fhs_imgs[1:])}
   <h3 class="project-subtitle">Friday Harbor Suites&ndash; Collection 2025</h3>
   <p class="project-desc">New collection and art direction by managing director of FHS.</p>
   {photo_row(fhs_collection_imgs)}

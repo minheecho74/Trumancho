@@ -437,6 +437,12 @@ main { padding-bottom: 100px; min-height: 50vh; }
   margin: 0 auto 50px;
   border-radius: 2px;
 }
+.project-illustration {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 14px;
+}
 
 /* Resume */
 .resume { max-width: 760px; margin: 0 auto; padding: 0 32px; }
