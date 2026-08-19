@@ -137,8 +137,8 @@ img { max-width: 100%; display: block; }
 .hero-collage {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
-  margin: 0 auto 90px;
+  gap: 8px;
+  margin: 0 -50px 90px;
 }
 .hero-collage img {
   width: 100%;
@@ -167,7 +167,11 @@ img { max-width: 100%; display: block; }
 }
 
 /* Featured projects: process filmstrip */
-.featured-projects { margin: 0 auto 90px; }
+.featured-projects.wrap {
+  margin: 0 auto 90px;
+  max-width: 1500px;
+  padding: 0 20px;
+}
 .section-heading {
   font-family: 'Manrope', sans-serif;
   font-weight: 800;
@@ -176,20 +180,14 @@ img { max-width: 100%; display: block; }
 }
 .process-row {
   display: flex;
-  gap: 16px;
+  gap: 4px;
 }
 .process-panel { flex: 1; text-align: center; }
 .process-img {
-  aspect-ratio: 1/1;
+  aspect-ratio: 351.2 / 435;
   background-size: 500% 100%;
+  background-repeat: no-repeat;
   border-radius: 2px;
-}
-.process-label {
-  font-family: 'Manrope', sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  margin-top: 14px;
-  font-size: 1rem;
 }
 
 /* Watch section */

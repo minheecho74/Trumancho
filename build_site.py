@@ -141,8 +141,7 @@ process_strip = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a
 process_labels = ["CREATE", "DIGITIZE", "CODE", "PLAY!", "MAKE"]
 process_panels = "".join(
     f'''<div class="process-panel">
-      <div class="process-img" style="background-image:url('{img(process_strip)}'); background-position:{p}% 0;"></div>
-      <div class="process-label">{label}</div>
+      <div class="process-img" role="img" aria-label="{label}" style="background-image:url('{img(process_strip)}'); background-position:{p}% 0;"></div>
     </div>'''
     for p, label in zip([0, 25, 50, 75, 100], process_labels)
 )
