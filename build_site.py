@@ -113,7 +113,7 @@ def page(title, current, body, description="Truman Cho — artist, game develope
 </main>
 <footer class="site-footer">
   <div class="foot-links">
-    <a href="/projects.html">Projects</a> · <a href="/journal/">Journal</a> · <a href="/about.html">About</a>
+    <a href="/projects.html">Projects</a> · <a href="/journal/">Journal</a> · <a href="/about.html">About</a> · <a href="https://contact">Contact</a>
   </div>
   <div>&copy; Truman Cho</div>
   <div style="margin-top:8px;">🎮 <a href="https://idk1801.itch.io/" target="_blank" rel="noopener">Games on itch.io</a> &nbsp;|&nbsp; 💬 <a href="https://x.com/RandomUser1081" target="_blank" rel="noopener">Dev updates on X</a> &nbsp;|&nbsp; 📸 <a href="https://www.instagram.com/thetrumancho" target="_blank" rel="noopener">Visual journal on Instagram</a></div>
@@ -136,8 +136,26 @@ hero_row = [
 "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/1780108142202-BIHUBQN1IDLEP37RGE8J/IMG_0722.jpg",
 "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/53f74df8-8c14-4568-b3f9-f888cd839f95/IMG_4270.jpg",
 ]
-hero_accent = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/142f5e09-cc8c-4fb1-82ce-61540e97b2f3/IMG_4264.jpg"
-hero_banner = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/e24f0bbb-3194-4482-9a05-bca7e7b26250/3.png"
+intro_photo = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/142f5e09-cc8c-4fb1-82ce-61540e97b2f3/IMG_4264.jpg"
+process_strip = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/e24f0bbb-3194-4482-9a05-bca7e7b26250/3.png"
+process_labels = ["CREATE", "DIGITIZE", "CODE", "PLAY!", "MAKE"]
+process_panels = "".join(
+    f'''<div class="process-panel">
+      <div class="process-img" style="background-image:url('{img(process_strip)}'); background-position:{p}% 0;"></div>
+      <div class="process-label">{label}</div>
+    </div>'''
+    for p, label in zip([0, 25, 50, 75, 100], process_labels)
+)
+watch_videos = [
+    ("eDjfnad-6zY", "betru maker presentation knollwood elementary"),
+    ("Z-xL04PwuUQ", "A Midevial Fantasy Gameboy game"),
+]
+watch_html = "".join(
+    f'''<div class="watch-embed">
+      <iframe src="https://www.youtube.com/embed/{vid}" title="{html.escape(title)}" allowfullscreen></iframe>
+    </div>'''
+    for vid, title in watch_videos
+)
 home_body = f"""
 <section class="hero">
   <div class="hero-intro">
@@ -147,13 +165,24 @@ home_body = f"""
   </div>
   <div class="hero-collage">
     {''.join(f'<img src="{img(u)}" alt="">' for u in hero_row)}
-    <div class="accent"><img src="{img(hero_accent)}" alt=""></div>
   </div>
-  <p style="max-width:720px;margin:0 auto 50px;">My parents wouldn't let me play Angry Birds, so I built my own version out of blocks. I wanted a Game Boy, so I made a cardboard version. That's still basically how I work. If something doesn't exist in the form I need, I figure out how to make it. I study computer science at Brooklyn Tech and publish my games on itch.io. My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
 </section>
-<a class="hero-banner" href="/projects.html">
-  <img src="{img(hero_banner)}" alt="Featured Projects">
-</a>
+<div class="intro-split wrap">
+  <img class="intro-photo" src="{img(intro_photo)}" alt="">
+  <p class="intro-text">My parents wouldn't let me play Angry Birds, so I built my own version out of blocks. I wanted a Game Boy, so I made a cardboard version. That's still basically how I work. If something doesn't exist in the form I need, I figure out how to make it. I study computer science at Brooklyn Tech and publish my games on <a href="https://idk1801.itch.io/" target="_blank" rel="noopener" style="text-decoration:underline;">itch.io</a>. My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
+</div>
+<section class="featured-projects wrap">
+  <h2 class="section-heading">FEATURED PROJECTS</h2>
+  <div class="process-row">
+    {process_panels}
+  </div>
+</section>
+<section class="watch-section">
+  <h2 class="section-heading watch-heading">watch</h2>
+  <div class="watch-videos wrap">
+    {watch_html}
+  </div>
+</section>
 """
 write("index.html", page("Truman Cho", "Home", home_body))
 
