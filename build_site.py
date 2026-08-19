@@ -621,18 +621,29 @@ portfolio_page("events-projects", "Events + Projects",
 
 # ---------- JOURNAL ----------
 posts = load("posts_extracted.json")
+journal_thumbs = load("journal_thumbs.json")
 # Dev Log 1 is a direct YouTube link, not a page
-dev_log = {"title": "DEV LOG 1", "date": "1/25/26", "youtube": "https://youtu.be/S-4ASV5tQos"}
+dev_log = {"title": "DEV LOG 1", "date": "1/25/26", "youtube": "https://youtu.be/S-4ASV5tQos",
+           "slug": "jo13sztq8wc9j4t6r3l25ybbjowy8k"}
 
-journal_list_items = f'<div class="journal-item"><span class="date">{dev_log["date"]}</span><a class="title" href="{dev_log["youtube"]}" target="_blank" rel="noopener">{dev_log["title"]} (YouTube)</a></div>\n'
+def journal_card(href, thumb_url, date, title, external=False):
+    target = ' target="_blank" rel="noopener"' if external else ""
+    return f"""<a class="journal-card" href="{href}"{target}>
+      <img src="/assets/img/{thumb_url}" alt="">
+      <div class="journal-card-date">{date}</div>
+      <div class="journal-card-title">{html.escape(title)}</div>
+      <div class="journal-card-more">Read More</div>
+    </a>"""
+
+journal_cards = journal_card(dev_log["youtube"], journal_thumbs[dev_log["slug"]], dev_log["date"], dev_log["title"], external=True)
 for p in posts:
     slug = p["slug"]
-    journal_list_items += f'<div class="journal-item"><span class="date">{p["date"]}</span><a class="title" href="/journal/{slug}.html">{html.escape(p["title"])}</a></div>\n'
+    journal_cards += journal_card(f"/journal/{slug}.html", journal_thumbs[slug], p["date"], p["title"])
 
 journal_index_body = f"""
 <h1 class="page-title">Journal</h1>
-<div class="journal-list">
-{journal_list_items}
+<div class="journal-grid wrap">
+{journal_cards}
 </div>
 """
 write("journal/index.html", page("Journal — Truman Cho", "Journal", journal_index_body,
