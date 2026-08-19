@@ -371,7 +371,7 @@ main { padding-bottom: 100px; min-height: 50vh; }
 }
 .about-photo-row img {
   flex: 1;
-  aspect-ratio: 330/470;
+  aspect-ratio: 330/350;
   object-fit: cover;
   border-radius: 2px;
 }
