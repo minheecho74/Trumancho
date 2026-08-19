@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generates the static truman-cho.com mirror from scraped _data/*.json into HTML files."""
 import json, os, re, html
+from PIL import Image
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "_data")
@@ -16,6 +17,38 @@ def img(url, cls=""):
     if not name:
         return url
     return f"/assets/img/{name}"
+
+_aspect_cache = {}
+def aspect_ratio(local_src):
+    """height/width for a locally-hosted image, from its file on disk. 0.75 fallback."""
+    if local_src in _aspect_cache:
+        return _aspect_cache[local_src]
+    ratio = 0.75
+    if local_src.startswith("/assets/img/"):
+        path = os.path.join(ROOT, local_src.lstrip("/"))
+        try:
+            with Image.open(path) as im:
+                ratio = im.height / im.width
+        except Exception:
+            pass
+    _aspect_cache[local_src] = ratio
+    return ratio
+
+def masonry(items, cols=3, extra_class=""):
+    """Balance figures across N flex columns by estimated rendered height (aspect ratio),
+    always placing the next figure into the currently-shortest column."""
+    columns = [[] for _ in range(cols)]
+    heights = [0.0] * cols
+    for it in items:
+        src, fig_html = it
+        shortest = heights.index(min(heights))
+        columns[shortest].append(fig_html)
+        heights[shortest] += aspect_ratio(src) + 0.08  # + gap/caption fudge factor
+    col_html = "".join(
+        f'<div class="masonry-col">{"".join(c)}</div>' for c in columns
+    )
+    cls = f"masonry {extra_class}".strip()
+    return f'<div class="{cls}">{col_html}</div>'
 
 NAV_ITEMS = [
     ("/", "Home", True),
@@ -80,24 +113,30 @@ def write(path, content):
     print("wrote", path)
 
 # ---------- HOME ----------
-home_imgs = [
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/53f74df8-8c14-4568-b3f9-f888cd839f95/IMG_4270.jpg",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/f26d0100-f170-4451-8ffa-b54cd09b0f1a/17.png",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/142f5e09-cc8c-4fb1-82ce-61540e97b2f3/IMG_4264.jpg",
+hero_row = [
 "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/1751743318824-BOAU93KAIVFFU0AQL19M/IMG_0224.jpeg",
+"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/f26d0100-f170-4451-8ffa-b54cd09b0f1a/17.png",
 "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/1780108142202-BIHUBQN1IDLEP37RGE8J/IMG_0722.jpg",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/e24f0bbb-3194-4482-9a05-bca7e7b26250/3.png",
+"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/53f74df8-8c14-4568-b3f9-f888cd839f95/IMG_4270.jpg",
 ]
+hero_accent = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/142f5e09-cc8c-4fb1-82ce-61540e97b2f3/IMG_4264.jpg"
+hero_banner = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/e24f0bbb-3194-4482-9a05-bca7e7b26250/3.png"
 home_body = f"""
 <section class="hero">
+  <div class="hero-intro">
   <p>I am an artist and game developer who loves bringing things to life through my game dev, small art business and teaching kids to be creators.</p>
   <p>My latest project: a free resource so any kid can cross from consumer to maker on their own terms.</p>
   <a class="cta" href="https://www.betrumaker.com" target="_blank" rel="noopener">visit betrumaker.com</a>
-  <p style="margin-top:50px;">My parents wouldn't let me play Angry Birds, so I built my own version out of blocks. I wanted a Game Boy, so I made a cardboard version. That's still basically how I work. If something doesn't exist in the form I need, I figure out how to make it. I study computer science at Brooklyn Tech and publish my games on itch.io. My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
-  <div class="hero-photos">
-    {''.join(f'<img src="{img(u)}" alt="">' for u in home_imgs)}
   </div>
+  <div class="hero-collage">
+    {''.join(f'<img src="{img(u)}" alt="">' for u in hero_row)}
+    <div class="accent"><img src="{img(hero_accent)}" alt=""></div>
+  </div>
+  <p style="max-width:720px;margin:0 auto 50px;">My parents wouldn't let me play Angry Birds, so I built my own version out of blocks. I wanted a Game Boy, so I made a cardboard version. That's still basically how I work. If something doesn't exist in the form I need, I figure out how to make it. I study computer science at Brooklyn Tech and publish my games on itch.io. My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
 </section>
+<a class="hero-banner" href="/projects.html">
+  <img src="{img(hero_banner)}" alt="Featured Projects">
+</a>
 """
 write("index.html", page("Truman Cho", "Home", home_body))
 
@@ -121,24 +160,20 @@ about_body = f"""
 <p>My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
 <p>All started with a comic book I bought for $1 from a kid at the park.</p>
 </div>
-<div class="post-gallery">
-{''.join(f'<img src="{img(u)}" alt="">' for u in about_imgs)}
-</div>
+{masonry([(img(u), f'<figure><img src="{img(u)}" alt=""></figure>') for u in about_imgs])}
 """
 write("about.html", page("About — Truman Cho", "About", about_body))
 
 # ---------- TIMELINE ----------
 timeline = load("timeline_images.json")
-tl_items = "".join(
-    f'<figure><img src="{img(t["src"])}" alt="{html.escape(t.get("caption",""))}"><figcaption>{html.escape(t.get("caption",""))}</figcaption></figure>'
+tl_figures = [
+    (img(t["src"]), f'<figure><img src="{img(t["src"])}" alt="{html.escape(t.get("caption",""))}"><figcaption>{html.escape(t.get("caption",""))}</figcaption></figure>')
     for t in timeline
-)
+]
 timeline_body = f"""
 <h1 class="page-title">Timeline</h1>
 <p class="page-subtitle">Twelve years of making, in order &mdash; from cardboard consoles to published games to a hotel gift shop to markets across three cities.</p>
-<div class="gallery">
-{tl_items}
-</div>
+{masonry(tl_figures)}
 """
 write("timeline.html", page("Timeline — Truman Cho", "Timeline", timeline_body,
       "A photo timeline of twelve years of making, from cardboard game consoles to published games and merchandise."))
@@ -250,9 +285,7 @@ youtube_body = f"""
 <div class="video-embed">
   <iframe src="https://www.youtube.com/embed/eKwmt9syNm0" title="Truman Cho devlog" allowfullscreen></iframe>
 </div>
-<div class="post-gallery">
-{''.join(f'<img src="{img(u)}" alt="">' for u in youtube_imgs)}
-</div>
+{masonry([(img(u), f'<figure><img src="{img(u)}" alt=""></figure>') for u in youtube_imgs])}
 """
 write("youtube.html", page("YouTube — Truman Cho", "YouTube", youtube_body))
 
@@ -324,18 +357,16 @@ write("projects.html", page("Projects — Truman Cho", "Projects", projects_body
 # ---------- PORTFOLIO GALLERIES ----------
 def gallery_page(fname, title, images_file, subtitle):
     imgs = load(images_file)
-    items = "".join(
-        f'<figure><img src="{img(it["src"])}" alt="{html.escape(it.get("caption",""))}">'
+    figures = [
+        (img(it["src"]), f'<figure><img src="{img(it["src"])}" alt="{html.escape(it.get("caption",""))}">'
         + (f'<figcaption>{html.escape(it["caption"])}</figcaption>' if it.get("caption") else "")
-        + '</figure>'
+        + '</figure>')
         for it in imgs
-    )
+    ]
     body = f"""
 <h1 class="page-title">{title}</h1>
 <p class="page-subtitle">{subtitle}</p>
-<div class="gallery">
-{items}
-</div>
+{masonry(figures)}
 """
     write(f"portfolio/{fname}.html", page(f"{title} — Truman Cho", "Projects", body))
 
@@ -367,7 +398,7 @@ write("journal/index.html", page("Journal — Truman Cho", "Journal", journal_in
 
 for i, p in enumerate(posts):
     slug = p["slug"]
-    gallery_imgs = "".join(f'<img src="{img(u)}" alt="">' for u in p["images"])
+    gallery_imgs = masonry([(img(u), f'<figure><img src="{img(u)}" alt=""></figure>') for u in p["images"]], cols=2, extra_class="post-gallery")
     paragraphs = "".join(f"<p>{html.escape(t)}</p>" for t in p["text"].split("\n") if t.strip())
     prev_link = f'<a href="/journal/{posts[i-1]["slug"]}.html">&larr; {html.escape(posts[i-1]["title"])}</a>' if i > 0 else '<span></span>'
     next_link = f'<a href="/journal/{posts[i+1]["slug"]}.html">{html.escape(posts[i+1]["title"])} &rarr;</a>' if i < len(posts)-1 else '<span></span>'
@@ -379,9 +410,7 @@ for i, p in enumerate(posts):
 <div class="post-body">
 {paragraphs}
 </div>
-<div class="post-gallery">
 {gallery_imgs}
-</div>
 <div class="post-nav">{prev_link}{next_link}</div>
 """
     write(f"journal/{slug}.html", page(f"{p['title']} — Truman Cho", "Journal", post_body))
