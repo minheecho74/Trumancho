@@ -382,6 +382,7 @@ main { padding-bottom: 100px; min-height: 50vh; }
   grid-template-columns: repeat(3, 1fr);
   gap: 30px 16px;
 }
+.journey-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
 .journey-tile img {
   width: 100%;
   aspect-ratio: 330/350;

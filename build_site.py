@@ -500,7 +500,7 @@ client_work_body = f"""
 <section class="project-block wrap">
   <h2 class="project-title">Custom Commissions</h2>
   <p class="project-meta">Custom work &middot; Various clients &middot; 2021&ndash;present</p>
-  <div class="journey-grid">
+  <div class="journey-grid cols-4">
     {''.join(f'<div class="journey-tile"><img src="{img(u)}" alt=""><div class="journey-caption">{html.escape(cap)}</div></div>' for u, cap in commissions)}
   </div>
 </section>
