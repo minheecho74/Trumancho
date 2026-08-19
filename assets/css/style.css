@@ -412,22 +412,22 @@ main { padding-bottom: 100px; min-height: 50vh; }
   margin: 40px 0 16px;
 }
 .project-photos {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   margin-bottom: 10px;
 }
 .project-photos img {
-  flex: 1 1 31%;
-  min-width: 220px;
+  width: 100%;
   aspect-ratio: 4/3;
   object-fit: cover;
   border-radius: 2px;
 }
-.project-photos img.project-photo-full {
-  flex-basis: 100%;
-  aspect-ratio: auto;
-  height: auto;
+@media (max-width: 900px) {
+  .project-photos { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .project-photos { grid-template-columns: 1fr; }
 }
 .project-cover {
   display: block;
