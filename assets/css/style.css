@@ -373,6 +373,7 @@ main { padding-bottom: 100px; min-height: 50vh; }
   flex: 1;
   aspect-ratio: 330/350;
   object-fit: cover;
+  object-position: top center;
   border-radius: 2px;
 }
 
