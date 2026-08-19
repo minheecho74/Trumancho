@@ -1,0 +1,9 @@
+.git
+.wrangler
+.gitignore
+.env
+_data
+build_site.py
+wrangler.jsonc
+README.md
+.DS_Store
