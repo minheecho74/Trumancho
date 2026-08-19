@@ -212,15 +212,19 @@ about_body = f"""
   </div>
 </div>
 <section class="about-section wrap">
-  <h3>How it started</h3>
-  <p>All started with a comic book I bought for $1 from a kid at the park.</p>
+  <div class="about-section-header">
+    <h3>How it started</h3>
+    <p>All started with a comic book I bought for $1 from a kid at the park.</p>
+  </div>
   <div class="about-photo-row">
     {''.join(f'<img src="{img(u)}" alt="">' for u in started_row)}
   </div>
 </section>
 <section class="about-section wrap">
-  <h3>My journey</h3>
-  <p>I Taught myself the things I wanted to learn and make and now giving back to encourage kids like me.</p>
+  <div class="about-section-header">
+    <h3>My journey</h3>
+    <p>I Taught myself the things I wanted to learn and make and now giving back to encourage kids like me.</p>
+  </div>
   <div class="journey-grid">
     {''.join(f'<div class="journey-tile"><img src="{img(u)}" alt=""><div class="journey-caption">{html.escape(cap)}</div></div>' for u, cap in journey_grid)}
   </div>
