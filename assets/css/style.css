@@ -330,6 +330,64 @@ main { padding-bottom: 100px; min-height: 50vh; }
   font-size: 0.95rem;
 }
 
+/* About page */
+.about-intro {
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+  margin: 20px auto 90px;
+}
+.about-photo {
+  width: 330px;
+  min-width: 330px;
+  aspect-ratio: 330/438;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.about-intro-text h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  margin: 0 0 20px;
+}
+.about-intro-text p { font-size: 1.1rem; margin: 0 0 20px; }
+
+.about-section { margin: 0 auto 90px; }
+.about-section h3 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.4rem;
+  margin: 0 0 12px;
+}
+.about-section > p { font-size: 1.05rem; margin: 0 0 26px; max-width: 640px; }
+
+.about-photo-row {
+  display: flex;
+  gap: 16px;
+}
+.about-photo-row img {
+  flex: 1;
+  aspect-ratio: 330/470;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.journey-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px 16px;
+}
+.journey-tile img {
+  width: 100%;
+  aspect-ratio: 330/350;
+  object-fit: cover;
+  border-radius: 2px;
+}
+.journey-caption {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
 /* Resume */
 .resume { max-width: 760px; margin: 0 auto; padding: 0 32px; }
 .resume h1 { font-family: 'Manrope', sans-serif; font-size: 2rem; margin-bottom: 4px; }
@@ -386,4 +444,9 @@ main { padding-bottom: 100px; min-height: 50vh; }
   .intro-photo { width: 220px; height: 220px; min-width: 0; }
   .process-row { flex-wrap: wrap; }
   .process-panel { flex: 1 1 40%; }
+  .about-intro { flex-direction: column; gap: 24px; }
+  .about-photo { width: 100%; min-width: 0; }
+  .about-photo-row { flex-wrap: wrap; }
+  .about-photo-row img { flex: 1 1 40%; }
+  .journey-grid { grid-template-columns: repeat(2, 1fr); }
 }

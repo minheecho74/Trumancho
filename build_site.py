@@ -186,26 +186,45 @@ home_body = f"""
 write("index.html", page("Truman Cho", "Home", home_body))
 
 # ---------- ABOUT ----------
-about_imgs = [
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/9ff6ec98-1db8-4d43-a7b8-29450a153674/Screenshot+2025-06-23+at+6.47.47%E2%80%AFPM.png",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/73f927f2-ef23-4909-a002-d965289c32ea/14.png",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/cc6d7c41-2a7b-4c85-ad5f-9f7903aa28ca/16.png",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/f1b2c854-df7c-40e8-ba75-c6d51c1e4ce6/557711349_17857829103518335_7504760071234781922_n.jpg",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/a24b8567-c689-427a-bf99-d3af20b36ef1/657740688_17880431190515204_2166118040848615964_n.jpg",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/6c4516f9-f021-46c4-bb89-5b84d8798972/Screenshot+2025-06-28+at+2.36.23%E2%80%AFPM.png",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/9e6482d0-5a55-454c-9ade-21988b631e1f/Screenshot+2025-06-29+at+8.47.39%E2%80%AFPM.png",
-"https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/e9266336-b6b7-48b9-9772-c0968d6219b3/maker-demo-classroom1.jpg",
+about_portrait = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/a24b8567-c689-427a-bf99-d3af20b36ef1/657740688_17880431190515204_2166118040848615964_n.jpg"
+started_row = [
+    "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/9ff6ec98-1db8-4d43-a7b8-29450a153674/Screenshot+2025-06-23+at+6.47.47%E2%80%AFPM.png",
+    "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/6c4516f9-f021-46c4-bb89-5b84d8798972/Screenshot+2025-06-28+at+2.36.23%E2%80%AFPM.png",
+    "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/9e6482d0-5a55-454c-9ade-21988b631e1f/Screenshot+2025-06-29+at+8.47.39%E2%80%AFPM.png",
+]
+journey_grid = [
+    ("https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/73f927f2-ef23-4909-a002-d965289c32ea/14.png", "AGE 6, first scratch games"),
+    ("https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/1759785791906-YXEOWL5S3VTDU93KP0UG/29403639_1893697284255305_3740429998100578304_n.jpg", "making consoles"),
+    ("https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/f26d0100-f170-4451-8ffa-b54cd09b0f1a/17.png", "designing games"),
+    ("https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/cc6d7c41-2a7b-4c85-ad5f-9f7903aa28ca/16.png", "developing games"),
+    ("https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/f1b2c854-df7c-40e8-ba75-c6d51c1e4ce6/557711349_17857829103518335_7504760071234781922_n.jpg", "selling my products"),
+    ("https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f/e9266336-b6b7-48b9-9772-c0968d6219b3/maker-demo-classroom1.jpg", "sharing what I love"),
 ]
 about_body = f"""
-<h1 class="page-title">About Me</h1>
-<div class="post-body">
-<p>I'm Truman Cho, a junior at Brooklyn Technical High School in New York.</p>
-<p>I've been making things my whole life &mdash; not because anyone told me to, but because I couldn't help it. Games, comics, cardboard consoles, merch, businesses. Most of it started with a question I couldn't answer any other way except by building something.</p>
-<p>I publish original games on itch.io, press them onto Game Boy cartridges, and sell my own character art at markets and pop-up events. Since I was ten I've worked at a boutique hotel in Washington State &mdash; starting in the kitchen and eventually designing the merchandise still sold in their gift shop.</p>
-<p>My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
-<p>All started with a comic book I bought for $1 from a kid at the park.</p>
+<div class="about-intro wrap">
+  <img class="about-photo" src="{img(about_portrait)}" alt="">
+  <div class="about-intro-text">
+    <h1>About Me</h1>
+    <p>I'm Truman Cho, a junior at Brooklyn Technical High School in New York.</p>
+    <p>I've been making things my whole life &mdash; not because anyone told me to, but because I couldn't help it. Games, comics, cardboard consoles, merch, businesses. Most of it started with a question I couldn't answer any other way except by building something.</p>
+    <p>I publish original games on itch.io, press them onto Game Boy cartridges, and sell my own character art at markets and pop-up events. Since I was ten I've worked at a boutique hotel in Washington State &mdash; starting in the kitchen and eventually designing the merchandise still sold in their gift shop.</p>
+    <p>My current itch to create is figuring out what it takes to shift a kid from player to maker.</p>
+  </div>
 </div>
-{masonry([(img(u), f'<figure><img src="{img(u)}" alt=""></figure>') for u in about_imgs])}
+<section class="about-section wrap">
+  <h3>How it started</h3>
+  <p>All started with a comic book I bought for $1 from a kid at the park.</p>
+  <div class="about-photo-row">
+    {''.join(f'<img src="{img(u)}" alt="">' for u in started_row)}
+  </div>
+</section>
+<section class="about-section wrap">
+  <h3>My journey</h3>
+  <p>I Taught myself the things I wanted to learn and make and now giving back to encourage kids like me.</p>
+  <div class="journey-grid">
+    {''.join(f'<div class="journey-tile"><img src="{img(u)}" alt=""><div class="journey-caption">{html.escape(cap)}</div></div>' for u, cap in journey_grid)}
+  </div>
+</section>
 """
 write("about.html", page("About — Truman Cho", "About", about_body))
 
