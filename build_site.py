@@ -543,7 +543,7 @@ tru_merch_body = f"""
 <img class="project-cover wrap" src="{img(tru_merch_cover)}" alt="">
 <section class="project-block wrap">
   <h2 class="project-title">TLC Collection</h2>
-  <p class="project-meta">started 2021</p>
+  <p class="project-meta">started 2023</p>
   {masonry([(img(it["src"]), f'<figure><img src="{img(it["src"])}" alt=""></figure>') for it in tlc_imgs])}
 </section>
 """
