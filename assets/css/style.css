@@ -300,6 +300,35 @@ main { padding-bottom: 100px; min-height: 50vh; }
 .masonry img { width: 100%; border-radius: 3px; }
 .masonry figcaption { font-size: 0.78rem; color: var(--muted); margin-top: 8px; line-height: 1.35; }
 
+/* Curated timeline: fixed 5-column grid with year labels */
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 30px 18px;
+}
+.timeline-card { margin: 0; }
+.timeline-card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.timeline-year {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 3px;
+}
+.timeline-card figcaption { font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
+
+@media (max-width: 900px) {
+  .timeline-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  .timeline-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 900px) {
   .masonry { flex-wrap: wrap; }
   .masonry-col { flex-basis: calc(50% - 10px); }

@@ -232,16 +232,36 @@ about_body = f"""
 """
 write("about.html", page("About — Truman Cho", "About", about_body))
 
-# ---------- TIMELINE ----------
+# ---------- TIMELINE (curated) ----------
+# One photo per distinct making-milestone, not every shot of every event.
+# Year/age labels are sourced from each photo's original journal post (its own
+# dated opening line, e.g. "2017-2018", "Aug 2021-", "Kindergarten 2016") or,
+# for "Analog Angry Birds", the post's own "age 4" framing -- not invented.
 timeline = load("timeline_images.json")
-tl_figures = [
-    (img(t["src"]), f'<figure><img src="{img(t["src"])}" alt="{html.escape(t.get("caption",""))}"><figcaption>{html.escape(t.get("caption",""))}</figcaption></figure>')
-    for t in timeline
-]
+tl_curated_idx = [0, 2, 6, 44, 26, 37, 27, 52, 42, 62, 55, 58, 79, 82, 72, 84, 88, 89, 100, 105]
+tl_year_overrides = {
+    0: "Age 4", 2: "2016", 6: "2017&ndash;18", 44: "2020", 26: "2020",
+    37: "2021", 27: "2023", 52: "2023", 42: "2024", 62: "2024", 55: "2024",
+    58: "2024", 79: "2025", 82: "2025", 72: "2025", 84: "2025",
+    88: "2025", 89: "2025", 100: "2026", 105: "2026",
+}
+tl_caption_overrides = {44: "Sketching the \"Adventure of the Sea\" game concept"}
+tl_cards = ""
+for i in tl_curated_idx:
+    t = timeline[i]
+    year = tl_year_overrides.get(i, "")
+    caption = tl_caption_overrides.get(i, t.get("caption", ""))
+    tl_cards += f'''<figure class="timeline-card">
+      <img src="{img(t["src"])}" alt="{html.escape(caption)}">
+      <div class="timeline-year">{year}</div>
+      <figcaption>{html.escape(caption)}</figcaption>
+    </figure>'''
 timeline_body = f"""
 <h1 class="page-title">Timeline</h1>
 <p class="page-subtitle">Twelve years of making, in order &mdash; from cardboard consoles to published games to a hotel gift shop to markets across three cities.</p>
-{masonry(tl_figures)}
+<div class="timeline-grid wrap">
+{tl_cards}
+</div>
 """
 write("timeline.html", page("Timeline — Truman Cho", "Timeline", timeline_body,
       "A photo timeline of twelve years of making, from cardboard game consoles to published games and merchandise."))
