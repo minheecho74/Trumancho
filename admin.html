@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TrumanSite Editor (local only)</title>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; background: #f7f7f5; color: #111; }
+  header { background: #111; color: #fff; padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  header .badge { font-size: 0.78rem; color: #aaa; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px; }
+  .years-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
+  .year-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+  .year-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; cursor: pointer; }
+  .year-card .body { padding: 12px; }
+  .year-card label { display: block; font-size: 0.75rem; color: #888; margin: 8px 0 2px; }
+  .year-card input, .year-card textarea { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 0.85rem; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; }
+  .year-card textarea { resize: vertical; min-height: 50px; }
+  .year-card .change-btn { font-size: 0.78rem; color: #555; background: none; border: none; text-decoration: underline; cursor: pointer; padding: 0; margin-top: 6px; }
+  .actions { position: sticky; bottom: 0; background: #f7f7f5; padding: 18px 0; display: flex; gap: 12px; border-top: 1px solid #ddd; }
+  button.primary { background: #111; color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
+  button.secondary { background: #fff; color: #111; border: 1px solid #111; padding: 12px 24px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #status { font-size: 0.85rem; color: #555; align-self: center; white-space: pre-wrap; }
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10; }
+  .modal-bg.open { display: flex; align-items: center; justify-content: center; }
+  .modal { background: #fff; border-radius: 10px; padding: 20px; max-width: 900px; max-height: 80vh; overflow-y: auto; width: 90%; }
+  .modal h2 { margin-top: 0; font-size: 1rem; }
+  .pool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .pool-grid figure { margin: 0; cursor: pointer; border: 2px solid transparent; border-radius: 6px; overflow: hidden; }
+  .pool-grid figure:hover { border-color: #111; }
+  .pool-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+  .pool-grid figcaption { font-size: 0.68rem; padding: 4px; color: #555; }
+  .close-btn { float: right; background: none; border: none; font-size: 1.2rem; cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Timeline Editor</h1>
+  <span class="badge">localhost only &middot; not the live site</span>
+</header>
+<main>
+  <div id="years" class="years-grid">Loading...</div>
+  <div class="actions">
+    <button class="secondary" id="saveBtn">Save (preview only)</button>
+    <button class="primary" id="publishBtn">Publish to live site</button>
+    <span id="status"></span>
+  </div>
+</main>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="close-btn" id="closeModal">&times;</button>
+    <h2>Pick a photo for <span id="modalYearLabel"></span></h2>
+    <div class="pool-grid" id="poolGrid"></div>
+  </div>
+</div>
+
+<script>
+let curated = [];
+let pool = [];
+let activeCardIndex = null;
+
+async function loadAll() {
+  curated = await (await fetch('/api/timeline/curated')).json();
+  pool = await (await fetch('/api/timeline/pool')).json();
+  render();
+}
+
+function render() {
+  const el = document.getElementById('years');
+  el.innerHTML = '';
+  curated.forEach((entry, cardIdx) => {
+    const photo = pool.find(p => p.index === entry.index);
+    const card = document.createElement('div');
+    card.className = 'year-card';
+    card.innerHTML = `
+      <img src="${photo ? photo.img : ''}" data-cardidx="${cardIdx}">
+      <div class="body">
+        <label>Label (shown on the page)</label>
+        <input type="text" value="${entry.label.replace(/"/g,'&quot;')}" data-field="label" data-cardidx="${cardIdx}">
+        <label>Caption</label>
+        <textarea data-field="caption_override" data-cardidx="${cardIdx}">${entry.caption_override || (photo ? photo.caption : '')}</textarea>
+        <button class="change-btn" data-cardidx="${cardIdx}">Change photo&hellip;</button>
+      </div>
+    `;
+    el.appendChild(card);
+  });
+
+  el.querySelectorAll('img, .change-btn').forEach(elm => {
+    elm.addEventListener('click', () => openPicker(parseInt(elm.dataset.cardidx)));
+  });
+  el.querySelectorAll('input[data-field]').forEach(elm => {
+    elm.addEventListener('input', () => {
+      curated[elm.dataset.cardidx][elm.dataset.field] = elm.value;
+    });
+  });
+  el.querySelectorAll('textarea[data-field]').forEach(elm => {
+    elm.addEventListener('input', () => {
+      curated[elm.dataset.cardidx][elm.dataset.field] = elm.value || null;
+    });
+  });
+}
+
+function openPicker(cardIdx) {
+  activeCardIndex = cardIdx;
+  const entry = curated[cardIdx];
+  document.getElementById('modalYearLabel').textContent = entry.label;
+  const grid = document.getElementById('poolGrid');
+  grid.innerHTML = '';
+  pool.forEach(p => {
+    const fig = document.createElement('figure');
+    fig.innerHTML = `<img src="${p.img}"><figcaption>${p.sourced ? p.year : '~' + p.year}: ${p.caption.slice(0,40)}</figcaption>`;
+    fig.addEventListener('click', () => {
+      curated[activeCardIndex].index = p.index;
+      document.getElementById('modalBg').classList.remove('open');
+      render();
+    });
+    grid.appendChild(fig);
+  });
+  document.getElementById('modalBg').classList.add('open');
+}
+
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('modalBg').classList.remove('open');
+});
+
+async function doSave(publish) {
+  const status = document.getElementById('status');
+  const saveBtn = document.getElementById('saveBtn');
+  const publishBtn = document.getElementById('publishBtn');
+  saveBtn.disabled = true; publishBtn.disabled = true;
+  status.textContent = publish ? 'Publishing… this can take a minute.' : 'Saving…';
+  try {
+    const r1 = await fetch('/api/timeline/curated', { method: 'POST', body: JSON.stringify(curated) });
+    const j1 = await r1.json();
+    if (!j1.ok) { status.textContent = 'Build failed:\n' + j1.log; return; }
+    if (!publish) { status.textContent = 'Saved locally. Refresh your local preview to see it.'; return; }
+    const r2 = await fetch('/api/publish', { method: 'POST', body: '{}' });
+    const j2 = await r2.json();
+    status.textContent = j2.ok ? 'Published! Live in a minute or two.' : ('Publish failed:\n' + j2.log);
+  } catch (e) {
+    status.textContent = 'Error: ' + e;
+  } finally {
+    saveBtn.disabled = false; publishBtn.disabled = false;
+  }
+}
+
+document.getElementById('saveBtn').addEventListener('click', () => doSave(false));
+document.getElementById('publishBtn').addEventListener('click', () => doSave(true));
+
+loadAll();
+</script>
+</body>
+</html>

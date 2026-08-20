@@ -238,23 +238,17 @@ about_body = f"""
 write("about.html", page("About — Truman Cho", "About", about_body))
 
 # ---------- TIMELINE (curated: one photo per year) ----------
-# One photo per calendar year, 2014-2026, picking whichever photo in that year
-# has a directly sourced date (from its own journal post) and the strongest
-# tie to a confirmed milestone, over a same-year photo with only an
-# interpolated/estimated date. Years with no photo at all (2017, 2019) are
-# skipped rather than filled with a guess.
+# Curation lives in _data/timeline_curated.json (editable via the local admin
+# tool at admin_server.py) rather than hardcoded here, so picks/captions can
+# change without touching this script.
 timeline = load("timeline_images.json")
-tl_curated_idx = [0, 1, 2, 3, 26, 45, 46, 52, 62, 82, 100]
-tl_year_overrides = {
-    0: "Age 4", 1: "2015", 2: "2016", 3: "2018", 26: "2020",
-    45: "2021", 46: "2022", 52: "2023", 62: "2024", 82: "2025", 100: "2026",
-}
-tl_caption_overrides = {}
+tl_curated = load("timeline_curated.json")
 tl_cards = ""
-for i in tl_curated_idx:
+for entry in tl_curated:
+    i = entry["index"]
     t = timeline[i]
-    year = tl_year_overrides.get(i, "")
-    caption = tl_caption_overrides.get(i, t.get("caption", ""))
+    year = entry["label"]
+    caption = entry.get("caption_override") or t.get("caption", "")
     tl_cards += f'''<figure class="timeline-card">
       <img src="{img(t["src"])}" alt="{html.escape(caption)}">
       <div class="timeline-year">{year}</div>
