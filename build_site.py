@@ -5,6 +5,7 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "_data")
+CDN = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f"
 
 def load(name):
     with open(os.path.join(DATA, name)) as f:
@@ -423,23 +424,27 @@ write("game-dev.html", page("Game Dev — Truman Cho", "Game Dev", game_dev_body
       "Truman Cho's GB Studio games: Archaea, OverDose, Mount Rock, and more, published on itch.io."))
 
 # ---------- PROJECTS LANDING ----------
-projects_body = """
+_projects_maker_img = f"{CDN}/53f74df8-8c14-4568-b3f9-f888cd839f95/IMG_4270.jpg"
+_projects_client_img = f"{CDN}/0603dfde-9759-4264-8013-14ae48a8158d/IMG_9565.jpg"
+_projects_merch_img = f"{CDN}/4185538d-9bb0-46ab-b3b3-5cf3907e771d/503040689_1896533771159955_6325911197630627969_n.jpg"
+_projects_events_img = f"{CDN}/02012e93-8fcc-48e4-bc66-85e20ea4537a/IMG_4999.jpg"
+projects_body = f"""
 <h1 class="page-title">Projects</h1>
 <div class="project-cats">
   <a class="project-cat" href="https://www.betrumaker.com" target="_blank" rel="noopener">
-    <img src="/assets/img/IMG_4270.jpg" alt="Maker Project">
+    <img src="{img(_projects_maker_img)}" alt="Maker Project">
     <span class="label">MAKER PROJECT</span>
   </a>
   <a class="project-cat" href="/portfolio/client-work.html">
-    <img src="/assets/img/IMG_9565.jpg" alt="Client Work">
+    <img src="{img(_projects_client_img)}" alt="Client Work">
     <span class="label">CLIENT WORK</span>
   </a>
   <a class="project-cat" href="/portfolio/tru-merch.html">
-    <img src="/assets/img/503040689_1896533771159955_6325911197630627969_n.jpg" alt="Tru Merch">
+    <img src="{img(_projects_merch_img)}" alt="Tru Merch">
     <span class="label">TRU MERCH</span>
   </a>
   <a class="project-cat" href="/portfolio/events-projects.html">
-    <img src="/assets/img/IMG_4999.jpg" alt="Events + Projects">
+    <img src="{img(_projects_events_img)}" alt="Events + Projects">
     <span class="label">EVENTS + PROJECTS</span>
   </a>
 </div>
@@ -447,7 +452,6 @@ projects_body = """
 write("projects.html", page("Projects — Truman Cho", "Projects", projects_body))
 
 # ---------- PORTFOLIO PAGES (real section structure, not flat galleries) ----------
-CDN = "https://images.squarespace-cdn.com/content/v1/6851fcf232cff511a449134f"
 
 def photo_row(urls, max_cols=4):
     """A row of cropped, uniformly-sized photos. Uses exactly len(urls) columns (all in
@@ -653,7 +657,7 @@ dev_log = {"title": "DEV LOG 1", "date": "1/25/26", "youtube": "https://youtu.be
 def journal_card(href, thumb_url, date, title, external=False):
     target = ' target="_blank" rel="noopener"' if external else ""
     return f"""<a class="journal-card" href="{href}"{target}>
-      <img src="/assets/img/journal/{thumb_url}" alt="">
+      <img src="{img(thumb_url)}" alt="">
       <div class="journal-card-date">{date}</div>
       <div class="journal-card-title">{html.escape(title)}</div>
       <div class="journal-card-more">Read More</div>
