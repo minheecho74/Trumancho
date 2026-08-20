@@ -237,20 +237,19 @@ about_body = f"""
 """
 write("about.html", page("About — Truman Cho", "About", about_body))
 
-# ---------- TIMELINE (curated) ----------
-# One photo per distinct making-milestone, not every shot of every event.
-# Year/age labels are sourced from each photo's original journal post (its own
-# dated opening line, e.g. "2017-2018", "Aug 2021-", "Kindergarten 2016") or,
-# for "Analog Angry Birds", the post's own "age 4" framing -- not invented.
+# ---------- TIMELINE (curated: one photo per year) ----------
+# One photo per calendar year, 2014-2026, picking whichever photo in that year
+# has a directly sourced date (from its own journal post) and the strongest
+# tie to a confirmed milestone, over a same-year photo with only an
+# interpolated/estimated date. Years with no photo at all (2017, 2019) are
+# skipped rather than filled with a guess.
 timeline = load("timeline_images.json")
-tl_curated_idx = [0, 2, 6, 44, 26, 37, 27, 52, 42, 62, 55, 58, 79, 82, 72, 84, 88, 89, 100, 105]
+tl_curated_idx = [0, 1, 2, 3, 26, 45, 46, 52, 62, 82, 100]
 tl_year_overrides = {
-    0: "Age 4", 2: "2016", 6: "2017&ndash;18", 44: "2020", 26: "2020",
-    37: "2021", 27: "2023", 52: "2023", 42: "2024", 62: "2024", 55: "2024",
-    58: "2024", 79: "2025", 82: "2025", 72: "2025", 84: "2025",
-    88: "2025", 89: "2025", 100: "2026", 105: "2026",
+    0: "Age 4", 1: "2015", 2: "2016", 3: "2018", 26: "2020",
+    45: "2021", 46: "2022", 52: "2023", 62: "2024", 82: "2025", 100: "2026",
 }
-tl_caption_overrides = {44: "Sketching the \"Adventure of the Sea\" game concept"}
+tl_caption_overrides = {}
 tl_cards = ""
 for i in tl_curated_idx:
     t = timeline[i]
