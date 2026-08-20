@@ -11,8 +11,12 @@ def load(name):
         return json.load(f)
 
 url_map = load("url_to_filename.json")
+path_map = load("url_to_path.json")
 
 def img(url, cls=""):
+    path = path_map.get(url)
+    if path:
+        return f"/assets/img/{path}"
     name = url_map.get(url)
     if not name:
         return url
@@ -649,7 +653,7 @@ dev_log = {"title": "DEV LOG 1", "date": "1/25/26", "youtube": "https://youtu.be
 def journal_card(href, thumb_url, date, title, external=False):
     target = ' target="_blank" rel="noopener"' if external else ""
     return f"""<a class="journal-card" href="{href}"{target}>
-      <img src="/assets/img/{thumb_url}" alt="">
+      <img src="/assets/img/journal/{thumb_url}" alt="">
       <div class="journal-card-date">{date}</div>
       <div class="journal-card-title">{html.escape(title)}</div>
       <div class="journal-card-more">Read More</div>
